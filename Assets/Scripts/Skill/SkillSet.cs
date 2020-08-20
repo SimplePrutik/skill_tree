@@ -1,10 +1,13 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class SkillSet
 {
-    class Skill
+    [Serializable]
+    public class Skill
     {
         /// <summary>
         /// Skill ID
@@ -34,6 +37,7 @@ public class SkillSet
     public SkillSet()
     {
         //здесь может быть че угодно, инициализация из JSON, с сервера итд, для простоты пусть будет так
+        //так же можно сделать расширение для Editor, чтоб он генерировал ScriptableObject по входящим данным
         skillSet = new List<Skill>
         {
             new Skill() {id = 0, skillName = "Base", cost = 0, skillDependencies = new List<int>{}, learnt = true},
@@ -46,21 +50,34 @@ public class SkillSet
         };
     }
 
-    private Skill GetSkillInfo(int id)
+    public Skill GetSkillInfo(int id)
     {
-        return skillSet.Find(x => x.id == id);
+        var skill = skillSet.Find(x => x.id == id);
+        if (skill == null)
+            Debug.LogWarning("Incorrect skill ID");
+        return skill;
     }
 
-    public void Learn(int id)
+    public bool Learn(int id)
     {
         if (GetSkillInfo(id).skillDependencies.Any(x => GetSkillInfo(x).learnt))
+        {
             skillSet[skillSet.FindIndex(x => x.id == id)].learnt = true;
+            return true;
+        }
+
+        return false;
     }
     
-    public void Forget(int id)
+    public bool Forget(int id)
     {
         if (skillSet.Where(x => x.learnt)
                     .All(y => y.skillDependencies.All(z => z != id)))
+        {
             skillSet[skillSet.FindIndex(x => x.id == id)].learnt = false;
+            return true;
+        }
+
+        return false;
     }
 }
