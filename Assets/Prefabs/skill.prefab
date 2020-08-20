@@ -326,4 +326,4 @@ MonoBehaviour:
   border: {fileID: 3703716185450430525}
   skillName: {fileID: 7095367645576792129}
   cost: {fileID: 8458941007860614802}
-  skillContainer: {fileID: 11400000, guid: 1fa2876d3b880a04ba5b318257a35782, type: 2}
+  currentSkill: {fileID: 11400000, guid: 22226d738b1216e4b99b5c4d544cb3d8, type: 2}
