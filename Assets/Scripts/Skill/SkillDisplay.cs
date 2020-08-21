@@ -62,14 +62,21 @@ public class SkillDisplay : MonoBehaviour, IInteractable
         //Transfer data from scriptable object
         skillName.text = skillInfo.skillName;
         cost.text = skillInfo.cost.ToString();
-        learnt = skillInfo.Learnt;
-        bgImage.color = learnt ? learntIdleColor : unlearntIdleColor;
+        bgImage.color = unlearntIdleColor;
         border.color = borderIdleColor;
         id = skillInfo.id;
-
+        
         //Select base skill
+        StartCoroutine(SelectAndLearnBase());
+    }
+
+    IEnumerator SelectAndLearnBase()
+    {
+        //Wait for all buttons being initialized
+        yield return new WaitForSeconds(0.01f);
         if (id == 0)
         {
+            Learn();
             OnSkillSelected(id);
             selected = true;
             border.color = borderSelectColor;
