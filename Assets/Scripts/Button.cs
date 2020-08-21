@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -17,6 +18,8 @@ public class Button : MonoBehaviour, IInteractable
     private Image bg => GetComponent<Image>();
 
     private bool interactionEnabled = true;
+    
+    public static Action<string> OnButtonPressed = delegate(string buttonName) {  };
 
     public string buttonName;
     
@@ -41,12 +44,26 @@ public class Button : MonoBehaviour, IInteractable
     public void OnPointerUp(PointerEventData eventData)
     {
         if (!interactionEnabled) return;
-        bg.color = enabledColor;
+        OnButtonPressed(buttonName);
+        bg.color = interactionEnabled ? enabledColor : disabledColor;
     }
 
-    public void SetInteractionMode(bool enable)
+    public void SetInteractionMode(string button, bool enable)
     {
+        if (buttonName != button) return;
         interactionEnabled = enable;
         bg.color = enable ? enabledColor : disabledColor;
     }
+    
+
+    private void OnEnable()
+    {
+        Player.OnButtonEnabled += SetInteractionMode;
+    }
+    
+    private void OnDisable()
+    {
+        Player.OnButtonEnabled -= SetInteractionMode;
+    }
+    
 }

@@ -297,6 +297,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 526689367}
+  - component: {fileID: 526689368}
   m_Layer: 5
   m_Name: skillpoints
   m_TagString: Untagged
@@ -325,6 +326,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &526689368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 526689366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be886f038ab89c74480ab25145a0386d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: skill_points
+  value: {fileID: 801106571}
 --- !u!1 &541627382
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,7 +702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabledColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
-  disabledColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
+  disabledColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   hoverColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   buttonName: forget_all
@@ -700,6 +715,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 783739608}
+  - component: {fileID: 783739609}
   m_Layer: 5
   m_Name: cost
   m_TagString: Untagged
@@ -728,6 +744,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &783739609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783739607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be886f038ab89c74480ab25145a0386d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: cost
+  value: {fileID: 1943197221}
 --- !u!1 &801106569
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,7 +923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabledColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
-  disabledColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
+  disabledColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   hoverColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   buttonName: forget
@@ -2700,7 +2730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabledColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
-  disabledColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
+  disabledColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   hoverColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   buttonName: gain
@@ -3131,7 +3161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabledColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
-  disabledColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
+  disabledColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   hoverColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   buttonName: learn

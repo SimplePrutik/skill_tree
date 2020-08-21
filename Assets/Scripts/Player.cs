@@ -7,10 +7,75 @@ public class Player : MonoBehaviour
 
     private int _skillPoints;
 
-    void Init()
+    private int skillSelectedId;
+
+    void Awake()
     {
         _skills = new SkillSet();
         _skillPoints = 0;
+        OnTextBoxChanged("skill_points", _skillPoints.ToString());
+        SkillSelectHandler(0);
+    }
+
+    public static Action<string, bool> OnButtonEnabled = delegate(string buttonName, bool enabled) { };
+    public static Action<string, string> OnTextBoxChanged = delegate(string buttonName, string value) { };
+
+    private void OnEnable()
+    {
+        SkillDisplay.OnSkillSelected += SkillSelectHandler;
+        SkillManager.OnSkillLearnt += LearnSkill;
+        Button.OnButtonPressed += ButtonHandler;
+    }
+    
+    
+    private void OnDisable()
+    {
+        SkillDisplay.OnSkillSelected -= SkillSelectHandler;
+        SkillManager.OnSkillLearnt -= LearnSkill;
+        Button.OnButtonPressed -= ButtonHandler;
+    }
+    
+    void ButtonHandler(string buttonName)
+    {
+        switch (buttonName)
+        {
+            case "gain":
+                SkillPointsInc();
+                break;
+            case "learn":
+                LearnSkill(skillSelectedId);
+                break;
+            case "forget":
+                ForgetSkill(skillSelectedId);
+                break;
+            case "forget_all":
+                ForgetAllSkills();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Synchronize UI with current data
+    /// </summary>
+    private void UIChanged()
+    {
+        OnButtonEnabled("learn", _skills.IsLearnable(skillSelectedId) && _skillPoints >= _skills.GetSkillInfo(skillSelectedId).cost);
+        OnButtonEnabled("forget", _skills.IsForgetable(skillSelectedId));
+        OnTextBoxChanged("cost", _skills.GetSkillInfo(skillSelectedId).cost.ToString());
+        OnTextBoxChanged("skill_points", _skillPoints.ToString());
+    }
+
+
+    /// <summary>
+    /// Handles selection change
+    /// </summary>
+    /// <param name="id"></param>
+    private void SkillSelectHandler(int id)
+    {
+        var skill = _skills.GetSkillInfo(id);
+        if (skill == null) return;
+        skillSelectedId = skill.id;
+        UIChanged();
     }
 
     /// <summary>
@@ -19,7 +84,7 @@ public class Player : MonoBehaviour
     public void SkillPointsInc()
     {
         ++_skillPoints;
-        Debug.Log($"PlayerInfo: Skill points - {_skillPoints}");
+        UIChanged();
     }
 
     /// <summary>
@@ -28,18 +93,10 @@ public class Player : MonoBehaviour
     /// <param name="id"></param>
     void LearnSkill(int id)
     {
-        var learnt = false;
         if (_skills.GetSkillInfo(id).cost <= _skillPoints)
-            learnt =  _skills.Learn(id);
-        
-        if (learnt)
         {
-            _skillPoints -= _skills.GetSkillInfo(id).cost;
-            Debug.Log($"PlayerInfo: Skill {_skills.GetSkillInfo(id).skillName} has been learnt; Skill points - {_skillPoints}");
-        }
-        else
-        {
-            //Throw message
+            _skillPoints -= _skills.Learn(id);
+            UIChanged();
         }
     }
 
@@ -49,14 +106,15 @@ public class Player : MonoBehaviour
     /// <param name="id"></param>
     void ForgetSkill(int id)
     {
-        var forgotten = _skills.Forget(id);
-        if (forgotten)
-        {
-            _skillPoints += _skills.GetSkillInfo(id).cost;
-        }
-        else
-        {
-            //Throw message
-        }
+        var returned_pts = _skills.Forget(id);
+        _skillPoints += returned_pts;
+        UIChanged();
+    }
+
+    void ForgetAllSkills()
+    {
+        var returned_pts = _skills.ForgetAll();
+        _skillPoints += returned_pts;
+        UIChanged();
     }
 }

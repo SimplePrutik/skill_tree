@@ -9,6 +9,7 @@
         <e p="Scripts" t="Include">
           <e p="Button.cs" t="Include" />
           <e p="IInteractable.cs" t="Include" />
+          <e p="ItemValue.cs" t="Include" />
           <e p="Player.cs" t="Include" />
           <e p="ScrollRectEx.cs" t="Include" />
           <e p="Skill" t="Include">

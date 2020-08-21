@@ -28,56 +28,103 @@ public class SkillSet
         /// <summary>
         /// Is it already learnt
         /// </summary>
-        public bool learnt;
+        private bool learnt;
+        public bool Learnt => learnt;
 
+        public Skill(int id, string skillName, int cost, List<int> skillDependencies, bool learnt)
+        {
+            this.id = id;
+            this.skillName = skillName;
+            this.cost = cost;
+            this.skillDependencies = new List<int>(skillDependencies);
+            this.learnt = learnt;
+        }
+
+        public void SetLearn(bool _learnt) => learnt = _learnt;
     }
 
-    private List<Skill> skillSet;
+    private readonly List<Skill> _skillSet;
 
     public SkillSet()
     {
         //здесь может быть че угодно, инициализация из JSON, с сервера итд, для простоты пусть будет так
         //так же можно сделать расширение для Editor, чтоб он генерировал ScriptableObject по входящим данным
-        skillSet = new List<Skill>
+        _skillSet = new List<Skill>
         {
-            new Skill() {id = 0, skillName = "Base", cost = 0, skillDependencies = new List<int>{}, learnt = true},
-            new Skill() {id = 1, skillName = "Jump", cost = 1, skillDependencies = new List<int>{0}, learnt = false},
-            new Skill() {id = 2, skillName = "Double Jump", cost = 3, skillDependencies = new List<int>{1}, learnt = false},
-            new Skill() {id = 3, skillName = "Shoot", cost = 2, skillDependencies = new List<int>{0}, learnt = false},
-            new Skill() {id = 4, skillName = "Speak", cost = 2, skillDependencies = new List<int>{0}, learnt = false},
-            new Skill() {id = 5, skillName = "Diplomacy", cost = 5, skillDependencies = new List<int>{3, 4}, learnt = false},
-            new Skill() {id = 6, skillName = "Respect", cost = 10, skillDependencies = new List<int>{2, 5}, learnt = false},
+            new Skill(0, "Base", 0, new List<int>{}, true),
+            new Skill(1, "Jump", 1, new List<int>{0}, false),
+            new Skill(2, "Double Jump", 3, new List<int>{1}, false),
+            new Skill(3, "Shoot", 2, new List<int>{0}, false),
+            new Skill(4, "Speak", 2, new List<int>{0}, false),
+            new Skill(5, "Diplomacy", 5, new List<int>{3, 4}, false),
+            new Skill(6, "Respect", 10, new List<int>{2, 5}, false),
         };
     }
 
+    /// <summary>
+    /// Get skill from skillset
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public Skill GetSkillInfo(int id)
     {
-        var skill = skillSet.Find(x => x.id == id);
+        var skill = _skillSet.Find(x => x.id == id);
         if (skill == null)
             Debug.LogWarning("Incorrect skill ID");
         return skill;
     }
 
-    public bool Learn(int id)
+    
+    public bool IsLearnable(int id) => !GetSkillInfo(id).Learnt && GetSkillInfo(id).skillDependencies.Any(x => GetSkillInfo(x).Learnt);
+    public bool IsForgetable(int id) => id != 0 && GetSkillInfo(id).Learnt && _skillSet.Where(x => x.Learnt)
+                                                .All(y => y.skillDependencies.All(z => z != id));
+
+    /// <summary>
+    /// Learns skill if possible and returns amount of wasted points 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public int Learn(int id)
     {
-        if (GetSkillInfo(id).skillDependencies.Any(x => GetSkillInfo(x).learnt))
+        if (IsLearnable(id))
         {
-            skillSet[skillSet.FindIndex(x => x.id == id)].learnt = true;
-            return true;
+            var _skill = _skillSet[_skillSet.FindIndex(x => x.id == id)];
+            _skill.SetLearn(true);
+            return _skill.cost;
         }
 
-        return false;
+        return 0;
     }
     
-    public bool Forget(int id)
+    /// <summary>
+    /// Forgets skill if possible and returns amount of returned points
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="forced"></param>
+    /// <returns></returns>
+    public int Forget(int id, bool forced = false)
     {
-        if (skillSet.Where(x => x.learnt)
-                    .All(y => y.skillDependencies.All(z => z != id)))
+        if (IsForgetable(id) || (forced && GetSkillInfo(id).Learnt && id != 0))
         {
-            skillSet[skillSet.FindIndex(x => x.id == id)].learnt = false;
-            return true;
+            Debug.Log($"Skill forgotten - {GetSkillInfo(id).skillName}");
+            var _skill = _skillSet[_skillSet.FindIndex(x => x.id == id)];
+            _skill.SetLearn(false);
+            return _skill.cost;
         }
 
-        return false;
+        return 0;
     }
+
+    /// <summary>
+    /// Forgets all skills and returns amount of returned points
+    /// </summary>
+    /// <returns></returns>
+    public int ForgetAll()
+    {
+        var pts = 0;
+        foreach (var skill in _skillSet)
+            pts += Forget(skill.id, true);
+        return pts;
+    }
+    
 }
